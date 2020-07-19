@@ -102,15 +102,14 @@ struct _IO_jump_t
 
 ex)House of Orange공격의 경우, `_int_malloc()`함수의 에러 메시지 출력 과정에서 `_IO_overflow`가 호출되는 원리를 이용한다.
 
-ex2) pwnable.tw의 seethefile의 경우 `_IO_close` 함수 포인터를 덮어쓰면 된다.
+ex2) pwnable.tw의 seethefile의 경우 `_IO_close` 또는 `_IO_finish` 함수 포인터를 덮어쓰면 된다.
 
-**중요** 조건이 있다.
+**중요**
 
-fake fp구조체의 `_cur_column` (fp + 0x48 (32-bit) or fp + 0x88 (64-bit)) 부분은 0을 가리키는 주소로 세팅해줘야 한다.
+조건이 있다.
 
-fp + 0x94 (32-bit) 부분이 vtable이고
-
-vtable + (4 * 18) 부분에 `_IO_close` 함수가 있다.
-
-
-
+- io구조체의 flag부분은 -1 (0xffffffff)로 채워줄 것
+- close나 finish함수의 인자값은 fp가 들어가니까 인자 유의할 것
+- fake fp구조체의 `_cur_column` (fp + 0x48 (32-bit) or fp + 0x88 (64-bit)) 부분은 0을 가리키는 주소로 세팅해줘야 한다.
+- fp + 0x94 (32-bit) or fp + 0xd8 (64-bit) 부분이 vtable이고
+- vtable + (4 * 18) 부분에 `_IO_close` 함수가 있다.
